@@ -1,0 +1,10 @@
+mode-*.py
+modes.dat
+*.msh
+*.webm
+*.pdf
+*.png
+results
+*.vtk
+*.mp4
+seismic_load.fee

@@ -1,0 +1,36 @@
+PROBLEM thermal 3D
+READ_MESH ../thermal.msh
+
+FUNCTION Tref(t) FILE ../transients/pt-$1.dat COLUMNS 1 2
+
+# the vectotr vec_Tref_t has all the times in the file
+# so vecmax() gives the last definiton time
+end_time = vecmax(vec_Tref_t)
+
+BC internal  T=Tref(t)
+BC external  h=1e-6      Tref=50
+BC symmetry  q=0
+
+INCLUDE ../properties.fee
+
+# thermal conductivies from 
+k_CS = k_carbon(T(x,y,z))*1e-3
+k_SS = k_312(T(x,y,z))*1e-3 
+
+kappa_CS = kappa_carbon(T(x,y,z))
+kappa_SS = kappa_312(T(x,y,z))
+
+SOLVE_PROBLEM
+
+INCLUDE ../scl-coords.fee
+
+PRINT %g $1 t %.3f Tref(t) {
+ T(scl_xi(2),scl_yi(2),scl_zi(2))
+ T(0.5*(scl_xi(2)+scl_xf(2)),0.5*(scl_yi(2)+scl_yf(2)),0.5*(scl_zi(2)+scl_zf(2)))
+ T(scl_xf(2),scl_yf(2),scl_zf(2))
+ T(scl_xi(4),scl_yi(4),scl_zi(4))
+ T(0.5*(scl_xi(4)+scl_xf(4)),0.5*(scl_yi(4)+scl_yf(4)),0.5*(scl_zi(4)+scl_zf(4)))
+ T(scl_xf(4),scl_yf(4),scl_zf(4))
+}
+
+WRITE_MESH temp-$1.msh T

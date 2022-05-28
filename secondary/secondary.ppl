@@ -1,0 +1,98 @@
+load "ranges.ppl"
+
+set preamble "\usepackage{amsmath}"
+
+set width 14*unit(cm)
+set size ratio 0.45
+
+set axis x arrow nomirrored
+set axis y arrow nomirrored
+
+set grid
+
+set terminal pdf
+
+set key above
+set yrange [0:tresca_max]
+
+set output "tresca.pdf"
+set ylabel "Tresca stress~$\sigma_\text{Tr}$ [MPa]"
+plot "transient-sep.dat" axes x1y2 w l lt 3 lw 2 color gray ti "",\
+     "results/concat-scl1.dat" u 1:15 w lp lt 1 ps 0.35 color blue      ti "SCL~1",\
+     "results/concat-scl2.dat" u 1:15 w lp lt 2 ps 0.35 color green     ti "SCL~2",\
+     "results/concat-scl3.dat" u 1:15 w lp lt 3 ps 0.35 color orange    ti "SCL~3",\
+     "results/concat-scl4.dat" u 1:15 w lp lt 4 ps 0.35 color redviolet ti "SCL~4"
+
+set output "MB.pdf"
+set nokey
+set xlabel "Time~$t$ [seg]"
+set ylabel "Membrane + Bending~$\text{MB}$ [MPa]"
+plot "transient-sep.dat" axes x1y2 w l lt 3 lw 2 color gray ti "",\
+     "results/concat-scl1.dat" u 1:16 w lp lt 1 ps 0.35 color blue      ti "SCL~1",\
+     "results/concat-scl2.dat" u 1:16 w lp lt 2 ps 0.35 color green     ti "SCL~2",\
+     "results/concat-scl3.dat" u 1:16 w lp lt 3 ps 0.35 color orange    ti "SCL~3",\
+     "results/concat-scl4.dat" u 1:16 w lp lt 4 ps 0.35 color redviolet ti "SCL~4"
+
+set key above
+set yrange [-principal_max:principal_max]
+set ytics principal_tics
+
+set output "sigmas-scl1.pdf"
+set ylabel "$\sigma_i$ [MPa] on SCL \#1"
+plot "transient-sep.dat" axes x1y2 w l lt 3 lw 2 color gray ti "",\
+     "results/concat-scl1.dat" u 1:9   w lp ps 0.75 pt 16 lw 1 lt 2 color blue  ti "$\sigma_1$",\
+     "results/concat-scl1.dat" u 1:10  w lp ps 0.75 pt 1  lw 1 lt 3 color blue  ti "$\sigma_2$",\
+     "results/concat-scl1.dat" u 1:11  w lp ps 0.75 pt 17 lw 1 lt 1 color blue  ti "$\sigma_3$"
+
+set output "sigmas-scl2.pdf"
+set ylabel "$\sigma_i$ [MPa] on SCL \#2"
+plot "transient-sep.dat" axes x1y2 w l lt 3 lw 2 color gray ti "",\
+     "results/concat-scl2.dat" u 1:9   w lp ps 0.75 pt 16 lw 1 lt 2 color green ti "$\sigma_1$",\
+     "results/concat-scl2.dat" u 1:10  w lp ps 0.75 pt 1  lw 1 lt 3 color green ti "$\sigma_2$",\
+     "results/concat-scl2.dat" u 1:11  w lp ps 0.75 pt 17 lw 1 lt 1 color green ti "$\sigma_3$"
+
+set output "sigmas-scl3.pdf"
+set ylabel "$\sigma_i$ [MPa] on SCL \#3"
+plot "transient-sep.dat" axes x1y2 w l lt 3 lw 2 color gray ti "",\
+     "results/concat-scl3.dat" u 1:9   w lp ps 0.75 pt 16 lw 3 lt 2 color orange ti "$\sigma_1$",\
+     "results/concat-scl3.dat" u 1:10  w lp ps 0.75 pt 1  lw 2 lt 3 color orange ti "$\sigma_2$",\
+     "results/concat-scl3.dat" u 1:11  w lp ps 0.75 pt 17 lw 1 lt 1 color orange ti "$\sigma_3$"
+
+set output "sigmas-scl4.pdf"
+set ylabel "$\sigma_i$ [MPa] on SCL \#4"
+plot "transient-sep.dat" axes x1y2 w l lt 3 lw 2 color gray ti "",\
+     "results/concat-scl4.dat" u 1:9   w lp ps 0.75 pt 16 lw 3 lt 2 color redviolet ti "$\sigma_1$",\
+     "results/concat-scl4.dat" u 1:10  w lp ps 0.75 pt 1  lw 2 lt 3 color redviolet ti "$\sigma_2$",\
+     "results/concat-scl4.dat" u 1:11  w lp ps 0.75 pt 17 lw 1 lt 1 color redviolet ti "$\sigma_3$"
+
+
+set yrange [-mb_max:mb_max]
+
+set output "mb-scl1.pdf"
+set ylabel "$\text{MB}_i$ [MPa] on SCL \#1"
+plot "transient-sep.dat" axes x1y2 w l lt 3 lw 2 color gray ti "",\
+     "results/concat-scl1.dat" u 1:12  w lp ps 0.75 pt 16 lw 1 lt 2 color blue  ti "$\text{MB}_1$",\
+     "results/concat-scl1.dat" u 1:13  w lp ps 0.75 pt 1  lw 1 lt 3 color blue  ti "$\text{MB}_2$",\
+     "results/concat-scl1.dat" u 1:14  w lp ps 0.75 pt 17 lw 1 lt 1 color blue  ti "$\text{MB}_3$"
+
+set output "mb-scl2.pdf"
+set ylabel "$\text{MB}_i$ [MPa] on SCL \#2"
+plot "transient-sep.dat" axes x1y2 w l lt 3 lw 2 color gray ti "",\
+     "results/concat-scl2.dat" u 1:12  w lp ps 0.75 pt 16 lw 1 lt 2 color green ti "$\\text{MB}_1$",\
+     "results/concat-scl2.dat" u 1:13  w lp ps 0.75 pt 1  lw 1 lt 3 color green ti "$\\text{MB}_2$",\
+     "results/concat-scl2.dat" u 1:14  w lp ps 0.75 pt 17 lw 1 lt 1 color green ti "$\\text{MB}_3$"
+
+set output "mb-scl3.pdf"
+set ylabel "$\text{MB}_i$ [MPa] on SCL \#3"
+plot "transient-sep.dat" axes x1y2 w l lt 3 lw 2 color gray ti "",\
+     "results/concat-scl3.dat" u 1:12  w lp ps 0.75 pt 16 lw 3 lt 2 color orange ti "$\text{MB}_1$",\
+     "results/concat-scl3.dat" u 1:13  w lp ps 0.75 pt 1  lw 2 lt 3 color orange ti "$\text{MB}_2$",\
+     "results/concat-scl3.dat" u 1:14  w lp ps 0.75 pt 17 lw 1 lt 1 color orange ti "$\text{MB}_3$"
+
+set output "mb-scl4.pdf"
+set ylabel "$\text{MB}_i$ [MPa] on SCL \#4"
+plot "transient-sep.dat" axes x1y2 w l lt 3 lw 2 color gray ti "",\
+     "results/concat-scl4.dat" u 1:12  w lp ps 0.75 pt 16 lw 3 lt 2 color redviolet ti "$\text{MB}_1$",\
+     "results/concat-scl4.dat" u 1:13  w lp ps 0.75 pt 1  lw 2 lt 3 color redviolet ti "$\text{MB}_2$",\
+     "results/concat-scl4.dat" u 1:14  w lp ps 0.75 pt 17 lw 1 lt 1 color redviolet ti "$\text{MB}_3$"
+

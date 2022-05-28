@@ -1,0 +1,4 @@
+INCLUDE scl-coords.was
+INCLUDE scl-fsrf.was
+
+PRINT_VECTOR FORMAT %.2f scl_xi scl_yi scl_zi scl_xf scl_yf scl_zf fsrf

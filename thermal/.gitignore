@@ -1,0 +1,16 @@
+thermal.msh
+thermal-temp.msh
+thermal-nodes.tex
+thermal-tetra.tex
+results/*
+results-*
+svg.geo
+*.pdf
+*.svg
+temp-*.dat
+temp-*.msh
+*.png
+*.mpg
+*.webm
+*.mp4
+__pycache__

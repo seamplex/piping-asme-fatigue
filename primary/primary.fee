@@ -1,0 +1,53 @@
+DEFAULT_ARGUMENT_VALUE 1 10
+
+t0 = wall_time()     # initial wall time
+
+PROBLEM mechanical 3D PROGRESS
+READ_MESH ../mech.msh
+
+# MUMPS can solve this problem faster but it'll need a lot of memory
+# PROBLEM KSP mumps
+
+T = 270   # design temperature [ºC]
+
+# Young's modulus & Poisson's coefficient at the design temperature
+# but without thermal expansion (i.e. alpha = 0)
+INCLUDE ../properties.fee
+
+MATERIAL CS  {
+  E=E_carbon(T)*1e3
+  nu=nu_carbon
+  rho=rho_carbon*1e-9
+  PHYSICAL_GROUP pipe_cs
+  PHYSICAL_GROUP actuator_cs
+  PHYSICAL_GROUP nozzle_cs }
+  
+MATERIAL SS  { 
+  E=E_312(T)*1e3
+  nu=nu_312
+  rho=rho_312*1e-9
+  PHYSICAL_GROUP pipe_ss
+  PHYSICAL_GROUP valve_ss }
+
+# the internal pressure comes from the command linearize
+BC internal pressure=$1
+  
+# self-weight
+fz(x,y,z) := -rho(x,y,z)*g  # rho in kg/mm^3 and g in m/s^2
+
+# these BCs are shared with modal and thus included
+INCLUDE ../bc_dirichlet.fee
+
+SOLVE_PROBLEM
+
+INCLUDE ../scl-coords.fee
+INCLUDE scl-linearize-primary.fee
+
+WRITE_MESH primary.vtk  VECTOR u v w   tresca sigma1 sigma2 sigma3
+# this one is to draw the SCLs
+WRITE_MESH Eoncells.vtk CELLS E 
+
+t1 = wall_time()     # final wall time
+
+PRINT "\# wall time [sec]   = "  %.2f t1-t0
+PRINT "\# memory [Gb]       = "  %.2f memory() TEXT "/" memory_available/1e9  SEP " "

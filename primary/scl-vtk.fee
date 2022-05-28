@@ -1,0 +1,4 @@
+INCLUDE ../scl-coords.fee
+
+PRINT_VECTOR "% .3f" scl_xi scl_yi scl_zi
+PRINT_VECTOR "% .3f" scl_xf scl_yf scl_zf

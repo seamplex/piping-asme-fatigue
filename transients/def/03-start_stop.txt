@@ -1,0 +1,8 @@
+# Normal condition 3, cooldown from full power to zero in hot condition (150 cycles)
+10  200     0
+10  200    40
+10  250    80
+10  250    80
+ 6  250    80
+ 5  150  1200
+ 5  150   200

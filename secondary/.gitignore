@@ -1,0 +1,17 @@
+scls.was
+times*.dat
+tdt-*.dat
+results*
+temp
+temp*.msh
+temps.py
+thermal-figs.tex
+mech_dt0.dat
+scl*.dat
+scl-linearize-secondary.fee
+secondary.dat
+secondary-figs.tex
+transient-sep.dat
+*.webm
+*.png
+*.pdf

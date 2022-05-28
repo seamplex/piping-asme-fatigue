@@ -1,0 +1,6 @@
+# lee un vector y lo mete en la malla
+MESH NAME thermal FILE_PATH ../thermal/thermal.msh
+FUNCTION tmp(x,y,z) MESH thermal VECTOR T NODES
+INPUT_FILE temp  temp/temp-$1-%g.dat $2
+READ ASCII_FILE temp  T
+MESH_POST FILE_PATH temp-$1.msh tmp

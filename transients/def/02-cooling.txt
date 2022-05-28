@@ -1,0 +1,6 @@
+# Normal condition 2, cooling from hot pressurized state (200 cycles)
+10     250      0
+10     250     40
+10      40   1800
+0.1     40     50
+0.1     40    600

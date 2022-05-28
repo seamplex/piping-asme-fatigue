@@ -1,0 +1,21 @@
+DEFAULT_ARGUMENT_VALUE 1 1    # mode
+DEFAULT_ARGUMENT_VALUE 2 20   # time
+
+READ_MESH modes.msh DIMENSIONS 3 {
+ READ_FIELD u$1 AS u0
+ READ_FIELD v$1 AS v0
+ READ_FIELD w$1 AS w0
+}
+
+dt = 1
+end_time = $2-dt
+
+PRINT t TEXT "/" $2 SEP " "
+
+omega = 2*pi/$2
+u(x,y,z) := cos(omega*t) * u0(x,y,z)
+v(x,y,z) := cos(omega*t) * v0(x,y,z)
+w(x,y,z) := cos(omega*t) * w0(x,y,z)
+
+OUTPUT_FILE vtk PATH results/mode$1-%04g.vtk t
+WRITE_MESH vtk VECTOR u v w

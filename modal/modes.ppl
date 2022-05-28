@@ -1,0 +1,38 @@
+set preamble "\usepackage{amsmath}"
+
+set width 14*unit(cm)
+set size ratio 0.375
+
+set axis x arrow nomirrored
+set axis y arrow nomirrored
+set nokey
+
+set grid
+
+set terminal pdf
+
+set xrange [0.5:n_modes+0.5]
+set xtics 1,1,n_modes
+
+set output "frecuency.pdf"
+set ylabel "Frecuency~$f_i$ [Hz]"
+#set ytics 250
+#set mytics 50
+plot "modes.dat" u 1:2 w boxes color black fillcolor emerald
+
+set output "participation.pdf"
+set yrange [-1:1]
+set ytics 1
+set mytics 0.25
+set ylabel "Participation factor~$\mathcal{L}_i/M_i$ [UA]"
+plot "modes.dat" u 1:6 w boxes color black fillcolor cyan
+
+set output "accumulated.pdf"
+set yrange [0:1]
+set ytics 0.2
+set mytics 0.1
+
+set xlabel "Mode~$i$"
+
+set ylabel "Effective accumualed mass~$\sum_{i^\prime=1}^{i} M^e_{i^\prime}$ [0-1]"
+plot "modes.dat" u 1:8 w boxes color black fillcolor melon

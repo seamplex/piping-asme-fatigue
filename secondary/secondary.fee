@@ -1,0 +1,130 @@
+DEFAULT_ARGUMENT_VALUE 1 1   # transient number
+
+# read mechanical mesh
+READ_MESH ../mech.msh DIMENSIONS 3
+
+# set problem to quasi-static, i.e. solve successive steady-state elasticity problems
+# but reading time-dependent properties (through time and space-dependent temperature)
+# this way, the solution at time t is used as the initial guess for t+dt
+PROBLEM mechanical QUASISTATIC PROGRESS
+
+# get the time intervals at which the quasistatic problem is to be solved
+FUNCTION tdt(t) FILE tdt-$1.dat
+
+end_time = vecmax(vec_tdt_t)
+dt = tdt(t)
+
+
+# # number of cycles of this transient to write it on the last column of the output
+# # this is used by the scripts that compute fatigue
+# VAR n
+# # these variables hold when the earthquake is expected to occur
+# VAR seismic_tran seismic_time seismic_dt
+# 
+# IF in_static
+#   READ ASCII_FILE_PATH ../transients/n-$1.dat n
+#   READ ASCII_FILE_PATH seismic-time.dat seismic_tran seismic_time seismic_dt
+# ENDIF  
+
+# read the time-dependent temperature distribution on the reduced mesh
+READ_MESH ../thermal/temp-$1.msh DIMENSIONS 3 READ_FIELD T AS temperature
+
+# read the accelerations from the seismic results (only at t=0)
+READ_MESH ../modal/seismic.msh DIMENSIONS 3 \
+  READ_FUNCTION ax \
+  READ_FUNCTION ay \
+  READ_FUNCTION az 
+
+# include dependence of material properties with temperature
+INCLUDE ../properties.fee
+
+
+# compute extensions of the temperature outside the reduced mesh
+# as the average over the "end" physical surfaces of the reduced mesh
+PHYSICAL_GROUP end_ss MESH ../thermal/temp-$1.msh DIM 2  # this is just to compute the area
+INTEGRATE temperature MESH ../thermal/temp-$1.msh OVER end_ss RESULT int_T_ss
+T_ss = int_T_ss/end_ss_area
+
+PHYSICAL_GROUP end_carbon MESH ../thermal/temp-$1.msh DIM 2  # this is just to compute the area
+INTEGRATE temperature MESH ../thermal/temp-$1.msh OVER end_carbon RESULT int_T_cs
+T_cs = int_T_cs/end_carbon_area
+
+# dependence of material properties with space, including temperature
+MATERIAL pipe_cs  {
+       T=T_cs
+   alpha=alpha_carbon(T_cs)*1e-6
+       E=E_carbon(T_cs)*1e3
+      nu=nu_carbon
+     rho=rho_carbon*1e-9
+}
+  
+MATERIAL pipe_ss {
+       T=T_ss
+   alpha=alpha_312(T_ss)*1e-6
+       E=E_312(T_ss)*1e3
+      nu=nu_312
+     rho=rho_312*1e-9
+}  
+  
+MATERIAL nozzle_cs {
+       T=temperature(x,abs(y),z)
+   alpha=alpha_carbon(T(x,y,z))*1e-6
+       E=E_carbon(T(x,y,z))*1e3
+      nu=nu_carbon
+      rho=rho_carbon*1e-9
+}  
+  
+MATERIAL valve_ss  {
+       T=temperature(x,abs(y),z)
+   alpha=alpha_312(T(x,y,z))*1e-6
+       E=E_312(T(x,y,z))*1e3
+      nu=nu_312
+     rho=rho_312*1e-9
+}  
+
+MATERIAL actuator_cs {
+       T=0.5*(T_cs+T_ss)
+   alpha=alpha_carbon(0.5*(T_cs+T_ss))*1e-6
+       E=E_carbon(0.5*(T_cs+T_ss))*1e3
+      nu=nu_carbon
+     rho=rho_carbon*1e-9
+}   
+
+
+# Neumann BCs (i.e. presure)
+FUNCTION p(t) FILE ../transients/pt-$1.dat COLUMNS 1 3 INTERPOLATION linear
+PHYSICAL_ENTITY NAME internal  BC P=p(t)
+
+# Dirichlet BCs (i.e. displacements)
+INCLUDE ../bc_dirichlet.fee
+
+# volumetric loads
+# acceleration in [ m/s^2 ] and  density in [ kg / mm^3 ] so fx is in [ N / mm^3 ]
+#earthquake = ($1=seismic_tran)&(t>(seismic_time-0.1))&(t<(seismic_time+seismic_dt+0.1))
+earthquake = 0
+
+# the "if" prevents the evaluation of rho and ax when not needed (i.e. most of the time)
+fx(x,y,z) := if(earthquake, (rho(x,y,z) * g*ax(x,y,z)))
+fy(x,y,z) := if(earthquake, (rho(x,y,z) * g*ay(x,y,z)))
+fz(x,y,z) := if(earthquake, (rho(x,y,z) * g*az(x,y,z))) - rho(x,y,z)*g  # self-weight
+
+INCLUDE ../scl-coords.fee
+
+SOLVE_PROBLEM                         # solve
+INCLUDE scl-linearize-secondary.fee   # and linearize
+
+PRINT %g $1 t %.2f {
+ T(scl_xi(1),scl_yi(1),scl_zi(1))
+ tresca(scl_xi(1),scl_yi(1),scl_zi(1))
+ sigma1(scl_xi(1),scl_yi(1),scl_zi(1))
+ sigma2(scl_xi(1),scl_yi(1),scl_zi(1))
+ sigma3(scl_xi(1),scl_yi(1),scl_zi(1))
+ tresca(scl_xi(4),scl_yi(4),scl_zi(4))
+ sigma1(scl_xi(4),scl_yi(4),scl_zi(4))
+ sigma2(scl_xi(4),scl_yi(4),scl_zi(4))
+ sigma3(scl_xi(4),scl_yi(4),scl_zi(4))
+ %g earthquake
+}
+
+OUTPUT_FILE vtk_file PATH "results/mech-%.0f-%.0f.vtk" $1 t
+WRITE_MESH vtk_file MESH ../mech.msh VECTOR u v w T tresca sigma1 sigma2 sigma3

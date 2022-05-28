@@ -1,0 +1,22 @@
+set preamble "\usepackage{amsmath}"
+
+set width 14*unit(cm)
+
+set axis x arrow nomirrored
+set axis y arrow nomirrored
+set yrange [0:3.7]
+set key top left
+
+set grid
+
+set terminal pdf
+
+set logscale x
+#set xtics 0.1,10,100
+
+set output "spectrum.pdf"
+set xlabel "Frecuency~$f$ [Hz]"
+set ylabel "Acceleration [fraction of $g$]"
+plot "spectrum-x.dat" w lp lw 3 lt 2 pt 16 color red   ti "$a_x(f)$",\
+     "spectrum-y.dat" w lp lw 2 lt 3 pt 17 color green ti "$a_y(f)$",\
+     "spectrum-z.dat" w lp lw 1 lt 4 pt 18 color blue  ti "$a_z(f)$"

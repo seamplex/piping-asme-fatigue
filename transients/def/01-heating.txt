@@ -1,0 +1,6 @@
+# Normal condition 1, heating from cooldown state (250 cycles)
+0.1   40      0
+0.1   40     40
+10    40    200
+10   250    100
+10   250    300

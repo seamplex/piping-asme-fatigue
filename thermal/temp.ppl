@@ -1,0 +1,57 @@
+set preamble "\usepackage{amsmath}"
+
+set width 14*unit(cm)
+
+set axis x arrow nomirrored
+set axis y arrow nomirrored
+
+set grid
+
+set terminal pdf
+
+set xlabel "Time~$t$ [seg]"
+set ylabel "Temperature~$T$ [C]"
+set key above
+
+set output "temp-scl-1.pdf"
+plot "temp-1.dat" u 2:3  w l lt 1 lw 4  color dandelion   ti "$T_\text{ref}(t)$",\
+     "temp-1.dat" u 2:5  w l lt 2 lw 2  color green       ti "SCL \#2 centre",\
+     "temp-1.dat" u 2:6  w l lt 3 lw 2  color green       ti "SCL \#2 end point",\
+     "temp-1.dat" u 2:8  w l lt 4 lw 3  color redviolet   ti "SCL \#4 centre",\
+     "temp-1.dat" u 2:9  w l lt 5 lw 3  color redviolet   ti "SCL \#4 end point"
+
+set output "temp-scl-2.pdf"
+plot "temp-2.dat" u 2:3  w l lt 1 lw 4  color dandelion   ti "$T_\text{ref}(t)$",\
+     "temp-2.dat" u 2:5  w l lt 2 lw 2  color green       ti "SCL \#2 centre",\
+     "temp-2.dat" u 2:6  w l lt 3 lw 2  color green       ti "SCL \#2 end point",\
+     "temp-2.dat" u 2:8  w l lt 4 lw 3  color redviolet   ti "SCL \#4 centre",\
+     "temp-2.dat" u 2:9  w l lt 5 lw 3  color redviolet   ti "SCL \#4 end point"
+
+set output "temp-scl-3.pdf"
+plot "temp-3.dat" u 2:3  w l lt 1 lw 4  color dandelion   ti "$T_\text{ref}(t)$",\
+     "temp-3.dat" u 2:5  w l lt 2 lw 2  color green       ti "SCL \#2 centre",\
+     "temp-3.dat" u 2:6  w l lt 3 lw 2  color green       ti "SCL \#2 end point",\
+     "temp-3.dat" u 2:8  w l lt 4 lw 3  color redviolet   ti "SCL \#4 centre",\
+     "temp-3.dat" u 2:9  w l lt 5 lw 3  color redviolet   ti "SCL \#4 end point"
+
+set output "temp-scl-4.pdf"
+plot "temp-4.dat" u 2:3  w l lt 1 lw 4  color dandelion   ti "$T_\text{ref}(t)$",\
+     "temp-4.dat" u 2:5  w l lt 2 lw 2  color green       ti "SCL \#2 centre",\
+     "temp-4.dat" u 2:6  w l lt 3 lw 2  color green       ti "SCL \#2 end point",\
+     "temp-4.dat" u 2:8  w l lt 4 lw 3  color redviolet   ti "SCL \#4 centre",\
+     "temp-4.dat" u 2:9  w l lt 5 lw 3  color redviolet   ti "SCL \#4 end point"
+     
+set key bottom right
+set xrange [220:400]
+set yrange [30:260]
+set output "temp-zoom.pdf"
+set width 12*unit(cm)
+#set ytics 50
+set mytics 10
+set size ratio 0.5
+
+plot "temp-1.dat" u 2:3  w l lt 1 lw 4  color dandelion   ti "$T_\text{ref}(t)$ for transient \#1",\
+     "temp-1.dat" u 2:5  w l lt 2 lw 2  color green       ti "SCL \#2 (carbon steel) centre ",\
+     "temp-1.dat" u 2:6  w l lt 3 lw 2  color green       ti "SCL \#2 (carbon steel) end point",\
+     "temp-1.dat" u 2:8  w l lt 4 lw 3  color redviolet   ti "SCL \#4 (stainless) centre",\
+     "temp-1.dat" u 2:9  w l lt 5 lw 3  color redviolet   ti "SCL \#4 (stainless) end point"

@@ -1,0 +1,6 @@
+FUNCTION intervals(t) FILE_PATH tdt-1.dat
+
+end_time = intervals_b
+dt = intervals(t)
+
+PRINT t dt

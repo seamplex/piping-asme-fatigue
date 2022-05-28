@@ -1,0 +1,49 @@
+PROBLEM modal 3D MODES 20
+READ_MESH modal.msh SCALE 0.001
+
+T = 270
+
+INCLUDE ../properties.fee
+
+# ro = 57
+# ri = 57-8.5
+# rho_d2o = 866  # density of the heavy water at 260 ºC
+
+E = 2.1e11
+rho = 7500
+nu = nu_carbon
+
+# # pay attention to the units! E must be in kg/(mm*s^2)
+# MATERIAL CS  {
+#   E=E_carbon(T)*1e6
+#   nu=nu_carbon
+#   rho=(rho_carbon+rho_d2o*ri^2/(ro^2-ri^2))*1e-9
+#   PHYSICAL_GROUP pipe_cs
+#   PHYSICAL_GROUP actuator_cs
+#   PHYSICAL_GROUP nozzle_cs }
+#   
+# MATERIAL SS  { 
+#   E=E_312(T)*1e6
+#   nu=nu_312
+#   rho=(rho_312+rho_d2o*ri^2/(ro^2-ri^2))*1e-9
+#   PHYSICAL_GROUP pipe_ss
+#   PHYSICAL_GROUP valve_ss }
+  
+# shared with primary
+INCLUDE ../bc_dirichlet.fee 
+
+SOLVE_PROBLEM
+
+#     f = frequency in Hertz
+#     m = generalized modal mass
+#   M_T = total mass
+#    mu = relative effective modal mass
+#     L = excitation factor
+# Gamma = participation factor
+#    Mu = accumlated effective modal mass
+PRINT_VECTOR  i %.1f  f   \
+                %.5f  m(i)/M_T \
+                %.3e  mu       \
+                %+.2f L        \
+                %+.3f Gamma    \
+                %.3f  Mu

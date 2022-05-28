@@ -1,0 +1,7 @@
+BC tank              tangential radial
+BC axial1            tangential w=0
+BC axial2            tangential w=0
+#BC axial2           fixed
+BC vertical          w=0
+BC valve-vertical    w=0
+BC valve-horizontal  u=0 v=0
