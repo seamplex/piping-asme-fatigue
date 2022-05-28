@@ -1,5 +1,5 @@
 divert(-1)dnl
-include(scls.m4)dnl
+include(../scls.m4)dnl
 include(../forloop.m4)dnl
 divert(0)dnl
 # vtk DataFile Version 2.0

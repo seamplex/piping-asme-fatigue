@@ -1,5 +1,5 @@
 include(../forloop.m4)
-include(scls.m4)
+include(../scls.m4)
 
 dnl TODO: add the whole report to the file
 forloop(`i',1,n_scls,`LINEARIZE_STRESS FROM scl_xi(i) scl_yi(i) scl_zi(i) TO  scl_xf(i) scl_yf(i) scl_zf(i)   Mt M_`'i   MBt MB_`'i
