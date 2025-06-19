@@ -1,0 +1,18 @@
+INCLUDE properties.fee
+
+E(temp) := E_carbon(temp)
+nu = nu_carbon
+Sm(temp) := Sm_carbon(temp)
+
+# datos para calcular el factor Ke de NB-3228.5
+ne = n_carbon  # usamos ne en lugar de m para evitar clashes
+me = m_carbon  # idem
+
+yield = yield_carbon
+
+# curva de fatiga en MPa
+INCLUDE SN.fee
+E_SN = E_SN_carbon
+SN(N') := exp(SN_log_carbon(log(N')))
+SN_a = exp(vecmin(vec_SN_log_carbon))
+SN_b = exp(vecmax(vec_SN_log_carbon))

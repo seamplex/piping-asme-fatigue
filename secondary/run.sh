@@ -60,6 +60,6 @@ for i in ${trans}; do
 
  # do the work!
  if [ ! -e results/scl-${i}-1.dat ]; then
-   feenox secondary.fee ${i} | tee -a secondary.dat
+   feenox secondary.fee ${i}  | tee -a secondary.dat
  fi  
 done

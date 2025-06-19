@@ -1,0 +1,18 @@
+INCLUDE properties.fee
+
+E(temp) := E_351(temp)
+nu = nu_351
+Sm(temp) := Sm_351(temp)
+
+# datos para calcular el factor Ke de NB-3228.5
+ne = n_austenitic  # usamos ne en lugar de m para evitar clashes con otras variables
+me = m_austenitic  # idem
+
+yield = yield_351
+
+# curva de fatiga en MPa
+INCLUDE SN.fee
+E_SN = E_SN_austenitic
+SN(N') := exp(SN_log_austenitic(log(N')))
+SN_a = exp(vecmin(vec_SN_log_austenitic))
+SN_b = exp(vecmax(vec_SN_log_austenitic))

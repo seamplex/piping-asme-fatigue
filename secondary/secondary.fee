@@ -6,7 +6,7 @@ READ_MESH ../mech.msh DIMENSIONS 3
 # set problem to quasi-static, i.e. solve successive steady-state elasticity problems
 # but reading time-dependent properties (through time and space-dependent temperature)
 # this way, the solution at time t is used as the initial guess for t+dt
-PROBLEM mechanical QUASISTATIC PROGRESS
+PROBLEM mechanical QUASISTATIC PROGRESS PC mumps
 
 # get the time intervals at which the quasistatic problem is to be solved
 FUNCTION tdt(t) FILE tdt-$1.dat
@@ -15,16 +15,16 @@ end_time = vecmax(vec_tdt_t)
 dt = tdt(t)
 
 
-# # number of cycles of this transient to write it on the last column of the output
-# # this is used by the scripts that compute fatigue
-# VAR n
+# number of cycles of this transient to write it on the last column of the output
+# this is used by the scripts that compute fatigue
+VAR n
 # # these variables hold when the earthquake is expected to occur
 # VAR seismic_tran seismic_time seismic_dt
 # 
-# IF in_static
-#   READ ASCII_FILE_PATH ../transients/n-$1.dat n
+IF in_static
+  READ_DATA FILE ../transients/n-$1.dat n
 #   READ ASCII_FILE_PATH seismic-time.dat seismic_tran seismic_time seismic_dt
-# ENDIF  
+ENDIF  
 
 # read the time-dependent temperature distribution on the reduced mesh
 READ_MESH ../thermal/temp-$1.msh DIMENSIONS 3 READ_FIELD T AS temperature
@@ -104,9 +104,9 @@ INCLUDE ../bc_dirichlet.fee
 earthquake = 0
 
 # the "if" prevents the evaluation of rho and ax when not needed (i.e. most of the time)
-fx(x,y,z) := if(earthquake, (rho(x,y,z) * g*ax(x,y,z)))
-fy(x,y,z) := if(earthquake, (rho(x,y,z) * g*ay(x,y,z)))
-fz(x,y,z) := if(earthquake, (rho(x,y,z) * g*az(x,y,z))) - rho(x,y,z)*g  # self-weight
+fx(x,y,z) = if(earthquake, (rho(x,y,z) * g*ax(x,y,z)))
+fy(x,y,z) = if(earthquake, (rho(x,y,z) * g*ay(x,y,z)))
+fz(x,y,z) = if(earthquake, (rho(x,y,z) * g*az(x,y,z))) - rho(x,y,z)*g  # self-weight
 
 INCLUDE ../scl-coords.fee
 

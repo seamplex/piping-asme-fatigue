@@ -1,0 +1,42 @@
+DEFAULT_ARGUMENT_VALUE 1 1
+INCLUDE material_scl$1.fee   # propiedades del material
+VAR n_scls
+# SHELL "echo n_scls | m4 scls.m4 - > n_scls.dat"
+READ_DATA FILE n_scls.dat n_scls
+INCLUDE scl-fsrf.fee         # factores de concentracion de tensiones
+
+# temperatura en funcion del paso del tiempo i
+FUNCTION T(i)   FILE input-$1.txt  COLUMNS 1 9 INTERPOLATION steffen
+
+# datos de los pares de extremos
+FUNCTION A(j)   FILE cycles-$1.dat COLUMNS 1 2
+FUNCTION B(j)   FILE cycles-$1.dat COLUMNS 1 3
+FUNCTION n_A(j) FILE cycles-$1.dat COLUMNS 1 4
+FUNCTION n_B(j) FILE cycles-$1.dat COLUMNS 1 5
+FUNCTION MB(j)  FILE cycles-$1.dat COLUMNS 1 6
+FUNCTION S(j)   FILE cycles-$1.dat COLUMNS 1 7
+
+# temperatura maxima (minimo del negativo) del par j
+Tmax(j) := T(func_min(-T(i), i, A(j), B(j)))
+
+# factor de correccion ke segun NB-32228.5
+ke(j) := if(MB(j) < 3*Sm(Tmax(j)), 1, if(MB(j) > 3*me*Sm(Tmax(j)), 1/ne, 1+((1-ne)/(ne*(me-1)))*(MB(j)/(3*Sm(Tmax(j))) - 1)))
+# factor de correccion knu segun ASME VIII div 2 sec 5.5.3.2
+knu(j) := if(MB(j) < yield, 1, if(MB(j) > 3*Sm(Tmax(j)), 1, (1-nu)/(1-max(0.5-0.2*(yield/MB(j)), nu))))
+
+# tension alternativa
+# S_alt(j) := 0.5 * ke(j) * knu(j) * S(j) * E_SN/E(Tmax(j))
+S_alt(j) := 0.5 * ke(j) * knu(j) * fsrf[$1] * MB(j) * E_SN/E(Tmax(j))
+# S_alt(j) := 0.5 * ke(j) * knu(j) * (MB(j) + FSRF*(S(j)-MB(j))) * E_SN/E(Tmax(j))
+
+# cantidad de ciclos a fatiga segun curva SN
+N(j) := if(S_alt(j) > SN(SN_a), SN_a, if(S_alt(j) < SN(SN_b), SN_b, root(S_alt(j) - SN(N'), N', SN_a, SN_b)))
+
+# ciclos del par j
+n(j) := min(n_A(j),n_B(j))
+
+# factor de uso del par j
+U(j) := n(j)/N(j)
+
+PRINT_FUNCTION FORMAT %.5g A B n_A n_B MB knu ke S S_alt N n U Tmax
+

@@ -7,6 +7,8 @@ FUNCTION Tref(t) FILE ../transients/pt-$1.dat COLUMNS 1 2
 # so vecmax() gives the last definiton time
 end_time = vecmax(vec_Tref_t)
 
+T_0(x,y,z) = Tref(0)
+
 BC internal  T=Tref(t)
 BC external  h=1e-6      Tref=50
 BC symmetry  q=0

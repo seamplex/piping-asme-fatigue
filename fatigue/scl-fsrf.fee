@@ -1,0 +1,2 @@
+VECTOR fsrf[n_scls]
+fsrf[i] = 1.0

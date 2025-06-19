@@ -1,0 +1,9 @@
+S = S_carbon
+
+# variables transformadas (no podemos usar * para nombres de funciones en feenox)
+O'(t) := if(O(t) < 0.04, 1.49, if(O(t) > 0.5, 4.02, log(O(t)/0.009)))
+S'(t) := if(S < 0.015, 2.0+98*S, 3.47)
+T'(t) := if(T(t) < 150, 0.395, (T(t)-75)/190)   # en C
+epsdot'(t) := if(epsdot(t) > 2.2, 0, if(epsdot(t) < 0.0004, log(0.0004/2.2), log(epsdot(t)/2.2)))
+
+F(t) := if(epsdot(t)<1e-5, 1, exp((0.003-0.031*epsdot'(t)) * S'(t) * T'(t) * O'(t)))

@@ -1,0 +1,6 @@
+# variables transformadas (no podemos usar * para nombres de funciones en wasora)
+O'(t) := if(O(t) < 0.10, 0.29, 0.14)
+T'(t) := if(T(t) < 150, 0, (T(t)-100)/2500)
+epsdot'(t) := if(epsdot(t) > 10, 0, if(epsdot(t) < 0.0004, log(0.0004/10), log(epsdot(t)/10)))
+
+F(t) := if(epsdot(t)<1e-5, 1, exp(-T'(t) * O'(t)* epsdot'(t)))

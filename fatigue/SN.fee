@@ -1,0 +1,65 @@
+# ------------------------------------------
+# curva de fatiga en MPa
+# modulo de Young de la curva SN de ASME appendix I figura I-9.1M pag 5(58)
+E_SN_carbon = 207 # [ GPa ]
+
+# para este acero al carbono UTS = 415 MPa (pag 279(328) linea 38)
+# asi que hay que usar la curva para UTS < 552 MPa de la I-9.1 (pag 6(59))
+
+# segun ASME hay que interpolar lineal en log-log, asi que primero
+# definimos esta funcion y nos aseguramos de interpolar lineal
+FUNCTION SN_log_carbon(N') INTERPOLATION linear DATA {
+log(1e1)    log(3999)
+log(2e1)    log(2827)
+log(5e1)    log(1896)
+log(1e2)    log(1413)
+log(2e2)    log(1069)
+log(5e2)    log(724)
+log(1e3)    log(572)
+log(2e3)    log(441)
+log(5e3)    log(331)
+log(1e4)    log(262)
+log(2e4)    log(214)
+log(5e4)    log(159)
+log(1e5)    log(138)
+log(2e5)    log(114)
+log(5e5)    log(93)
+log(1e6)    log(86)
+log(1e7)    log(77)
+log(1e8)    log(68)
+log(1e9)    log(61)
+log(1e10)   log(54)
+log(1e11)   log(48)
+}
+
+
+# modulo de Young de la curva SN de ASME appendix I figura I-9.2M pag 8(61)
+E_SN_austenitic = 195 # [ GPa ]
+
+# segun ASME hay que interpolar lineal en log-log, asi que primero
+# definimos esta funcion y nos aseguramos de interpolar lineal
+FUNCTION SN_log_austenitic(N') INTERPOLATION linear DATA {
+log(1E1)    log(6000)
+log(2E1)    log(4300)
+log(5E1)    log(2748)
+log(1E2)    log(1978)
+log(2E2)    log(1440)
+log(5E2)    log(974)
+log(1E3)    log(745)
+log(2E3)    log(590)
+log(5E3)    log(450)
+log(1E4)    log(368)
+log(2E4)    log(300)
+log(5E4)    log(235)
+log(1E5)    log(196)
+log(2E5)    log(168)
+log(5E5)    log(142)
+log(1E6)    log(126)
+log(2E6)    log(113)
+log(5E6)    log(102)
+log(1E7)    log(99.0)
+log(1E8)    log(97.1)
+log(1E9)    log(95.8)
+log(1E10)   log(94.4)
+log(1E11)   log(93.7)
+}
